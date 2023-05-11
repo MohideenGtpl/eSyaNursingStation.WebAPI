@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaNursingStation.IF;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaNursingStation.WebAPI.Controllers
+{
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    public class InPatientInfoController : ControllerBase
+    {
+        private readonly IInPatientInfoRepository _inPatientInfoRepository;
+
+        public InPatientInfoController(IInPatientInfoRepository inPatientInfoRepository)
+        {
+            _inPatientInfoRepository = inPatientInfoRepository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetInPatientDetails()
+        {
+            var ds = await _inPatientInfoRepository.GetInPatientDetails();
+            return Ok(ds);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetInPatientDetailsByIPNumber(int ipNumber)
+        {
+            var ds = await _inPatientInfoRepository.GetInPatientDetailsByIPNumber(ipNumber);
+            return Ok(ds);
+        }
+    }
+}

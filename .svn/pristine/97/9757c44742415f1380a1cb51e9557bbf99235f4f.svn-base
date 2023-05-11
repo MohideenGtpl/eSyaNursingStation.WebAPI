@@ -1,0 +1,20 @@
+﻿using eSyaNursingStation.DO;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace eSyaNursingStation.IF
+{
+    public interface IPatientClinicalInformationRepository
+    {
+        Task<DO_ReturnParameter> InsertIntoPatientClinicalInformation(DO_PatientClinicalInformation obj);
+
+        Task<DO_ReturnParameter> UpdatePatientClinicalInformation(DO_PatientClinicalInformation obj);
+
+        Task<List<DO_PatientClinicalInformation>> GetClinicalInformationValueForPatient(int businessKey, int UHID, int ipNumber);
+
+        Task<List<DO_CL_ControlValue>> GetClinicalInformationValueByTransaction(int businessKey, int UHID, int ipNumber, int transactionID);
+
+    }
+}

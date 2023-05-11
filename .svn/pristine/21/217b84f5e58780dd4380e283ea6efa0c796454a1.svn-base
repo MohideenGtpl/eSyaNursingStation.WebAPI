@@ -1,0 +1,438 @@
+﻿using eSyaNursingStation.DL.Entities;
+using eSyaNursingStation.DO;
+using eSyaNursingStation.IF;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace eSyaNursingStation.DL.Repository
+{
+    public class PatientClinicalInformationRepository : IPatientClinicalInformationRepository
+    {
+        public async Task<DO_ReturnParameter> InsertIntoPatientClinicalInformation(DO_PatientClinicalInformation obj)
+        {
+            using (var db = new eSyaEnterprise())
+            {
+                using (var dbContext = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var sl = db.GtIpclin.Where(w => w.BusinessKey == obj.BusinessKey && w.Uhid == obj.UHID && w.Ipnumber == obj.IPNumber).Select(s => s.TransactionId).DefaultIfEmpty(0).Max() + 1;
+
+                        int chartNumber = 0;
+                        var CL = obj.l_CL_ControlValue.FirstOrDefault();
+                        if (CL != null)
+                        {
+                            if (CL.CLType == "IO")
+                            {
+                                if (obj.TransactionDate.TimeOfDay >= new TimeSpan(8, 0, 0))
+                                {
+                                    var ch = db.GtIpclin.Where(w => w.BusinessKey == obj.BusinessKey && w.Uhid == obj.UHID && w.Ipnumber == obj.IPNumber
+                                              && w.Cltype == CL.CLType && (w.TransactionDate.Date == obj.TransactionDate.Date && w.TransactionDate.TimeOfDay >= new TimeSpan(8, 0, 0)
+                                                    || (w.TransactionDate.Date == obj.TransactionDate.Date.AddDays(1) && w.TransactionDate.TimeOfDay < new TimeSpan(8, 0, 0)))
+                                    ).FirstOrDefault();
+                                    if (ch != null)
+                                        chartNumber = ch.ChartNumber;
+                                }
+                                else
+                                {
+                                    var ch = db.GtIpclin.Where(w => w.BusinessKey == obj.BusinessKey && w.Uhid == obj.UHID && w.Ipnumber == obj.IPNumber
+                                               && w.Cltype == CL.CLType && (w.TransactionDate.Date == obj.TransactionDate.Date.AddDays(-1) && w.TransactionDate.TimeOfDay > new TimeSpan(8, 0, 0)
+                                                || (w.TransactionDate.Date == obj.TransactionDate.Date && w.TransactionDate.TimeOfDay < new TimeSpan(8, 0, 0)))
+                                   ).FirstOrDefault();
+                                    if (ch != null)
+                                        chartNumber = ch.ChartNumber;
+                                }
+
+                                if (chartNumber == 0)
+                                {
+                                    chartNumber = db.GtIpclin.Where(w => w.BusinessKey == obj.BusinessKey && w.Uhid == obj.UHID && w.Ipnumber == obj.IPNumber)
+                                        .Select(s => s.ChartNumber).DefaultIfEmpty(0).Max() + 1;
+
+                                }
+                            }
+                        }
+
+                        foreach (var c in obj.l_CL_ControlValue)
+                        {
+                            if (!string.IsNullOrEmpty(c.Value))
+                            {
+                                GtIpclin cl = new GtIpclin
+                                {
+                                    BusinessKey = obj.BusinessKey,
+                                    Uhid = obj.UHID,
+                                    Ipnumber = obj.IPNumber,
+                                    TransactionId = sl,
+                                    TransactionDate = obj.TransactionDate,
+                                    Cltype = c.CLType,
+                                    ClcontrolId = c.CLControlID,
+                                    ValueType = c.ValueType,
+                                    Value = c.Value,
+                                    ChartNumber = chartNumber,
+                                    ActiveStatus = true,
+                                    FormId = obj.FormID,
+                                    CreatedBy = obj.UserID,
+                                    CreatedOn = System.DateTime.Now,
+                                    CreatedTerminal = obj.TerminalID
+                                };
+                                db.GtIpclin.Add(cl);
+                            }
+                        }
+
+                        await db.SaveChangesAsync();
+                        dbContext.Commit();
+                        return new DO_ReturnParameter() { Status = true, Message = "Successfully." };
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        dbContext.Rollback();
+                        throw ex;
+                    }
+                    catch (Exception ex)
+                    {
+                        dbContext.Rollback();
+                        throw ex;
+                    }
+                }
+            }
+        }
+
+        public async Task<DO_ReturnParameter> UpdatePatientClinicalInformation(DO_PatientClinicalInformation obj)
+        {
+            using (var db = new eSyaEnterprise())
+            {
+                using (var dbContext = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+
+                        foreach (var c in obj.l_CL_ControlValue)
+                        {
+                            if (!string.IsNullOrEmpty(c.Value))
+                            {
+                                var cl = db.GtIpclin.Where(w => w.BusinessKey == obj.BusinessKey
+                                            && w.Uhid == obj.UHID && w.Ipnumber == obj.IPNumber
+                                            && w.TransactionId == obj.TransactionID
+                                            && w.ClcontrolId == c.CLControlID).FirstOrDefault();
+                                if (cl == null)
+                                {
+                                    var prev = db.GtIpclin.Where(w => w.BusinessKey == obj.BusinessKey
+                                            && w.Uhid == obj.UHID && w.Ipnumber == obj.IPNumber
+                                            && w.TransactionId == obj.TransactionID).OrderBy(o => o.TransactionDate).FirstOrDefault();
+
+                                    cl = new GtIpclin
+                                    {
+                                        BusinessKey = obj.BusinessKey,
+                                        Uhid = obj.UHID,
+                                        Ipnumber = obj.IPNumber,
+                                        TransactionId = obj.TransactionID,
+                                        TransactionDate = prev.TransactionDate,
+                                        Cltype = c.CLType,
+                                        ClcontrolId = c.CLControlID,
+                                        ChartNumber = prev.ChartNumber,
+                                        ValueType = c.ValueType,
+                                        Value = c.Value,
+                                        ActiveStatus = true,
+                                        FormId = obj.FormID,
+                                        CreatedBy = obj.UserID,
+                                        CreatedOn = System.DateTime.Now,
+                                        CreatedTerminal = obj.TerminalID
+                                    };
+                                    db.GtIpclin.Add(cl);
+                                }
+                                else
+                                {
+                                    cl.ValueType = c.ValueType;
+                                    cl.Value = c.Value;
+                                    cl.ActiveStatus = obj.ActiveStatus;
+                                    cl.ModifiedBy = obj.UserID;
+                                    cl.ModifiedOn = System.DateTime.Now;
+                                    cl.ModifiedTerminal = obj.TerminalID;
+                                }
+                            }
+                        }
+
+                        await db.SaveChangesAsync();
+                        dbContext.Commit();
+                        return new DO_ReturnParameter() { Status = true, Message = "Successfully." };
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        dbContext.Rollback();
+                        throw ex;
+                    }
+                    catch (Exception ex)
+                    {
+                        dbContext.Rollback();
+                        throw ex;
+                    }
+                }
+            }
+        }
+
+        public async Task<List<DO_PatientClinicalInformation>> GetClinicalInformationValueForPatient(int businessKey, int UHID, int ipNumber, string clType)
+        {
+            using (var db = new eSyaEnterprise())
+            {
+                var ns = await db.GtIpclin
+                        .Where(w => w.BusinessKey == businessKey && w.Uhid == UHID && w.Ipnumber == ipNumber
+                           && w.Cltype == clType && w.ActiveStatus)
+                        .Select(x => new DO_PatientClinicalInformation
+                        {
+                            TransactionID = x.TransactionId,
+                            TransactionDate = x.TransactionDate,
+                            ChartNumber = x.ChartNumber,
+                            Value = x.Value
+                        }).ToListAsync();
+
+                return ns;
+            }
+        }
+
+        public async Task<List<DO_PatientClinicalInformation>> GetClinicalInformationValueView(int businessKey, int UHID, int ipNumber, string clType)
+        {
+            using (var db = new eSyaEnterprise())
+            {
+                var ip = await db.GtIpclin
+                        .Where(w => w.BusinessKey == businessKey && w.Uhid == UHID && w.Ipnumber == ipNumber
+                           && w.Cltype == clType && w.ActiveStatus)
+                        .Select(x => new DO_PatientClinicalInformation
+                        {
+                            TransactionID = x.TransactionId,
+                            TransactionDate = x.TransactionDate,
+                            ChartNumber = x.ChartNumber,
+                            //l_CL_ControlValue = db.GtIpclin.Where(w => w.BusinessKey == businessKey && w.Uhid == UHID && w.Ipnumber == ipNumber
+                            //                                        && w.Cltype == clType && w.TransactionId == x.TransactionId && w.ActiveStatus)
+                            //                    .Select(c => new DO_CL_ControlValue
+                            //                    {
+                            //                        CLControlID = c.ClcontrolId,
+                            //                        CLType = c.Cltype,
+                            //                        Value = c.Value
+                            //                    }).ToList()
+                        }).Distinct().ToListAsync();
+
+                var cl = ip.Select(x => new DO_PatientClinicalInformation
+                {
+                    TransactionID = x.TransactionID,
+                    TransactionDate = x.TransactionDate,
+                    ChartNumber = x.ChartNumber,
+                    l_CL_ControlValue = db.GtIpclin.Where(w => w.BusinessKey == businessKey && w.Uhid == UHID && w.Ipnumber == ipNumber
+                                                            && w.Cltype == clType && w.TransactionId == x.TransactionID && w.ActiveStatus)
+                                        .Select(c => new DO_CL_ControlValue
+                                        {
+                                            CLControlID = c.ClcontrolId,
+                                            CLType = c.Cltype,
+                                            Value = c.Value
+                                        }).ToList()
+                }).ToList();
+
+
+                return cl;
+            }
+        }
+
+        public async Task<List<DO_PatientClinicalInformation>> GetClinicalInformationValueByTransaction(int businessKey, int UHID, int ipNumber, int transactionID)
+        {
+            using (var db = new eSyaEnterprise())
+            {
+                var ns = await db.GtIpclin
+                        .Where(w => w.BusinessKey == businessKey && w.Uhid == UHID && w.Ipnumber == ipNumber
+                           && w.TransactionId == transactionID
+                           && w.ActiveStatus)
+                        .Select(x => new DO_PatientClinicalInformation
+                        {
+                            TransactionID = x.TransactionId,
+                            TransactionDate = x.TransactionDate,
+                            ChartNumber = x.ChartNumber,
+                            CLControlID = x.ClcontrolId,
+                            ValueType = x.ValueType,
+                            Value = x.Value
+                        }).ToListAsync();
+
+                return ns;
+            }
+        }
+
+        public async Task<DO_ReturnParameter> InsertIntoPatientMedicationDrug(DO_PatientMedicationDrug obj)
+        {
+            using (var db = new eSyaEnterprise())
+            {
+                using (var dbContext = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var dg = db.GtIpcldg.Where(w => w.BusinessKey == obj.BusinessKey && w.Uhid == obj.UHID && w.Ipnumber == obj.IPNumber && w.DrugCode == obj.DrugCode).FirstOrDefault();
+                        if (dg == null)
+                        {
+                            dg = new GtIpcldg
+                            {
+                                BusinessKey = obj.BusinessKey,
+                                Uhid = obj.UHID,
+                                Ipnumber = obj.IPNumber,
+                                DrugCode = obj.DrugCode,
+                                TransactionDate = System.DateTime.Now,
+                                DrugName = obj.DrugName,
+                                Dosages = obj.Dosages,
+                                Frequency = obj.Frequency,
+                                Route = obj.Route,
+                                MedicationStartDate = obj.MedicationStartDate,
+                                DoctorId = obj.DoctorID,
+                                DoctorName = obj.DoctorName,
+                                ActiveStatus = true,
+                                FormId = obj.FormID,
+                                CreatedBy = obj.UserID,
+                                CreatedOn = System.DateTime.Now,
+                                CreatedTerminal = obj.TerminalID
+                            };
+                            db.GtIpcldg.Add(dg);
+                        }
+                        else
+                        {
+                            dg.Dosages = obj.Dosages;
+                            dg.Frequency = obj.Frequency;
+                            dg.Route = obj.Route;
+                            dg.MedicationStartDate = obj.MedicationStartDate;
+                            dg.MedicationEndDate = obj.MedicationEndDate;
+                        }
+
+                        await db.SaveChangesAsync();
+                        dbContext.Commit();
+                        return new DO_ReturnParameter() { Status = true, Message = "Successfully." };
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        dbContext.Rollback();
+                        throw ex;
+                    }
+                    catch (Exception ex)
+                    {
+                        dbContext.Rollback();
+                        throw ex;
+                    }
+                }
+            }
+        }
+
+        public async Task<DO_ReturnParameter> InsertIntoPatientMedicationGiven(DO_PatientMedicationGiven obj)
+        {
+            using (var db = new eSyaEnterprise())
+            {
+                using (var dbContext = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+
+                        GtIpcldi di = new GtIpcldi
+                        {
+                            BusinessKey = obj.BusinessKey,
+                            Uhid = obj.UHID,
+                            Ipnumber = obj.IPNumber,
+                            DrugCode = obj.DrugCode,
+                            MedicationGivenOn = obj.MedicationGivenOn,
+                            ActiveStatus = true,
+                            FormId = obj.FormID,
+                            CreatedBy = obj.UserID,
+                            CreatedOn = System.DateTime.Now,
+                            CreatedTerminal = obj.TerminalID
+                        };
+                        db.GtIpcldi.Add(di);
+
+                        var dg = db.GtIpcldg.Where(w => w.BusinessKey == obj.BusinessKey && w.Uhid == obj.UHID && w.Ipnumber == obj.IPNumber
+                                && w.DrugCode == obj.DrugCode).FirstOrDefault();
+                        if (dg != null)
+                        {
+                            dg.LastMedicationDate = obj.MedicationGivenOn;
+                        }
+
+
+                        await db.SaveChangesAsync();
+                        dbContext.Commit();
+                        return new DO_ReturnParameter() { Status = true, Message = "Successfully." };
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        dbContext.Rollback();
+                        throw ex;
+                    }
+                    catch (Exception ex)
+                    {
+                        dbContext.Rollback();
+                        throw ex;
+                    }
+                }
+            }
+        }
+
+        public async Task<List<DO_PatientMedicationDrug>> GetPatientMedicationDrug(int businessKey, int UHID, int ipNumber)
+        {
+            using (var db = new eSyaEnterprise())
+            {
+                var ns = await db.GtIpcldg
+                        .Where(w => w.BusinessKey == businessKey && w.Uhid == UHID && w.Ipnumber == ipNumber
+                           && w.ActiveStatus)
+                        .Select(x => new DO_PatientMedicationDrug
+                        {
+                            DrugCode = x.DrugCode,
+                            DrugName = x.DrugName,
+                            Dosages = x.Dosages,
+                            Frequency = x.Frequency,
+                            Route = x.Route,
+                            MedicationStartDate = x.MedicationStartDate,
+                            MedicationEndDate = x.MedicationEndDate,
+                            DoctorID = x.DoctorId,
+                            DoctorName = x.DoctorName,
+                            LastMedicationDate = x.LastMedicationDate,
+                        }).ToListAsync();
+
+                return ns;
+            }
+        }
+
+        public async Task<DO_PatientMedicationDrug> GetPatientMedicationDetailByDrugCode(int businessKey, int UHID, int ipNumber, int drugCode)
+        {
+            using (var db = new eSyaEnterprise())
+            {
+                var ns = await db.GtIpcldg
+                        .Where(w => w.BusinessKey == businessKey && w.Uhid == UHID && w.Ipnumber == ipNumber
+                           && w.ActiveStatus)
+                        .Select(x => new DO_PatientMedicationDrug
+                        {
+                            DrugCode = x.DrugCode,
+                            DrugName = x.DrugName,
+                            Dosages = x.Dosages,
+                            Frequency = x.Frequency,
+                            Route = x.Route,
+                            MedicationStartDate = x.MedicationStartDate,
+                            MedicationEndDate = x.MedicationEndDate,
+                            DoctorID = x.DoctorId,
+                            DoctorName = x.DoctorName,
+                            LastMedicationDate = x.LastMedicationDate,
+                        }).FirstOrDefaultAsync();
+
+                return ns;
+            }
+        }
+
+        public async Task<List<DO_PatientMedicationGiven>> GetPatientMedicationDrugGivenTiming(int businessKey, int UHID, int ipNumber, int drugCode)
+        {
+            using (var db = new eSyaEnterprise())
+            {
+                var ns = await db.GtIpcldi
+                        .Where(w => w.BusinessKey == businessKey && w.Uhid == UHID && w.Ipnumber == ipNumber
+                            && w.DrugCode == drugCode
+                            && w.ActiveStatus)
+                        .Select(x => new DO_PatientMedicationGiven
+                        {
+                            DrugCode = x.DrugCode,
+                            MedicationGivenOn = x.MedicationGivenOn,
+                        }).ToListAsync();
+
+                return ns;
+            }
+        }
+
+    }
+}

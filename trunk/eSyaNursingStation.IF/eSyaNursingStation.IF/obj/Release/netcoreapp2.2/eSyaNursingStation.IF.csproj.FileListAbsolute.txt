@@ -1,0 +1,12 @@
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.IF\eSyaNursingStation.IF\bin\Release\netcoreapp2.2\eSyaNursingStation.IF.deps.json
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.IF\eSyaNursingStation.IF\bin\Release\netcoreapp2.2\eSyaNursingStation.IF.dll
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.IF\eSyaNursingStation.IF\bin\Release\netcoreapp2.2\eSyaNursingStation.IF.pdb
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.IF\eSyaNursingStation.IF\bin\Release\netcoreapp2.2\eSyaNursingStation.DO.dll
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.IF\eSyaNursingStation.IF\bin\Release\netcoreapp2.2\eSyaNursingStation.DO.pdb
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.IF\eSyaNursingStation.IF\obj\Release\netcoreapp2.2\eSyaNursingStation.IF.csprojAssemblyReference.cache
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.IF\eSyaNursingStation.IF\obj\Release\netcoreapp2.2\eSyaNursingStation.IF.csproj.CoreCompileInputs.cache
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.IF\eSyaNursingStation.IF\obj\Release\netcoreapp2.2\eSyaNursingStation.IF.AssemblyInfoInputs.cache
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.IF\eSyaNursingStation.IF\obj\Release\netcoreapp2.2\eSyaNursingStation.IF.AssemblyInfo.cs
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.IF\eSyaNursingStation.IF\obj\Release\netcoreapp2.2\eSyaNursingStation.IF.csproj.CopyComplete
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.IF\eSyaNursingStation.IF\obj\Release\netcoreapp2.2\eSyaNursingStation.IF.dll
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.IF\eSyaNursingStation.IF\obj\Release\netcoreapp2.2\eSyaNursingStation.IF.pdb

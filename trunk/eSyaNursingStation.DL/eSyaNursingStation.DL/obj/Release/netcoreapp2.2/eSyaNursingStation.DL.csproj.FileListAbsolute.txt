@@ -1,0 +1,16 @@
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.DL\eSyaNursingStation.DL\bin\Release\netcoreapp2.2\eSyaNursingStation.DL.deps.json
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.DL\eSyaNursingStation.DL\bin\Release\netcoreapp2.2\eSyaNursingStation.DL.runtimeconfig.json
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.DL\eSyaNursingStation.DL\bin\Release\netcoreapp2.2\eSyaNursingStation.DL.runtimeconfig.dev.json
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.DL\eSyaNursingStation.DL\bin\Release\netcoreapp2.2\eSyaNursingStation.DL.dll
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.DL\eSyaNursingStation.DL\bin\Release\netcoreapp2.2\eSyaNursingStation.DL.pdb
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.DL\eSyaNursingStation.DL\bin\Release\netcoreapp2.2\eSyaNursingStation.DO.dll
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.DL\eSyaNursingStation.DL\bin\Release\netcoreapp2.2\eSyaNursingStation.IF.dll
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.DL\eSyaNursingStation.DL\bin\Release\netcoreapp2.2\eSyaNursingStation.DO.pdb
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.DL\eSyaNursingStation.DL\bin\Release\netcoreapp2.2\eSyaNursingStation.IF.pdb
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.DL\eSyaNursingStation.DL\obj\Release\netcoreapp2.2\eSyaNursingStation.DL.csprojAssemblyReference.cache
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.DL\eSyaNursingStation.DL\obj\Release\netcoreapp2.2\eSyaNursingStation.DL.csproj.CoreCompileInputs.cache
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.DL\eSyaNursingStation.DL\obj\Release\netcoreapp2.2\eSyaNursingStation.DL.AssemblyInfoInputs.cache
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.DL\eSyaNursingStation.DL\obj\Release\netcoreapp2.2\eSyaNursingStation.DL.AssemblyInfo.cs
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.DL\eSyaNursingStation.DL\obj\Release\netcoreapp2.2\eSyaNursingStation.DL.csproj.CopyComplete
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.DL\eSyaNursingStation.DL\obj\Release\netcoreapp2.2\eSyaNursingStation.DL.dll
+D:\eSya Project\Solution\Project_eSyaWebAPI\eSyaNursingStation.WebAPI\trunk\eSyaNursingStation.DL\eSyaNursingStation.DL\obj\Release\netcoreapp2.2\eSyaNursingStation.DL.pdb
